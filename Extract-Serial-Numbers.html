@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>
-Extract Serial Numbers v1.2
+Extract Serial Numbers v2.1
 </title>
 <meta name="author" content="Matt Landau">
 <script>
@@ -19,11 +19,11 @@ function extractSerialNumbers(textAreaID, separator, countID = "") {
   const tModels = /(t1)/;
   const sVariations = /(s)/;
   const oldSequence = /(\d{8})/;
-  const modelSeriesSeparator = /(-)/;
   const newSequence = /(b\d{2}([a-l]\d{4}))/;
   const termination = /(?=($|\D\s))/;
 
-  const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")(" + sVariations.source + ")?" + "(" + modelSeriesSeparator + ")" + oldSequence.source + "|" + newSequence.source + termination.source + ")", "gi");
+  const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + dModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")" + sVariations.source + "?(-)(" + oldSequence.source + "|" + newSequence.source + termination.source + ")", "gi");
+  console.log("regex pattern: " + regexPattern)
   
   const formValue = document.getElementById(textAreaID).value
   const matches= formValue.toUpperCase().match(regexPattern) || [];
@@ -39,9 +39,8 @@ function extractSerialNumbers(textAreaID, separator, countID = "") {
 }
 
 
-function copyToClipboard() {
-    toastUp("Copied to clipboard")
-    navigator.clipboard.writeText(document.getElementById("myTextToFilterForSerialNumbers").value);
+function copyTextToClipboardSimple(text) {
+    navigator.clipboard.writeText(text);
 }
 
 </script>
@@ -59,102 +58,10 @@ function copyToClipboard() {
     <button onclick="extractSerialNumbers('text_containing_serial_numbers', '\n', 'serial_number_count')">Extract Serials (newline separated)</button>
     <button onclick="extractSerialNumbers('text_containing_serial_numbers', ',', 'serial_number_count')">Extract Serials (comma separated)</button>
     <br />
-    <button onclick="copyTextToClipboard(document.getElementById('text_containing_serial_numbers').value).then(upperToast('Text copied', 'positive')).catch(error => upperToast(error, 'negative'));">
+    <button onclick="copyTextToClipboardSimple(document.getElementById('text_containing_serial_numbers').value)">
         Copy to Clipboard
     </button>
     <p id="serial_number_count" />
 </div>
 </body>
 </html>
-
-
-
-
-  <!-- EXTRACT SERIAL NUMBERS TOOL
-  <div id="extract-serial-numbers-tool">
-    <hr />
-    <div>
-        <strong>Extract Serial Numbers from plain text</strong>
-    </div>
-    <textarea id="text_containing_serial_numbers" placeholder="Paste any text" rows="8" cols="80"></textarea>
-    <br />
-    <div class="item_div stats_op" onclick="extractSerialNumbers('text_containing_serial_numbers', '|', 'serial_number_count')">Extract Serials (pipe separated)</div>
-    <div class="item_div stats_op" onclick="extractSerialNumbers('text_containing_serial_numbers', '\n', 'serial_number_count')">Extract Serials (newline separated)</div>
-    <div class="item_div stats_op" onclick="extractSerialNumbers('text_containing_serial_numbers', ',', 'serial_number_count')">Extract Serials (comma separated)</div>
-    <br />
-    <div class="item_div stats_op" 
-        onclick="copyTextToClipboard(document.getElementById('text_containing_serial_numbers').value).then(upperToast('Text copied', 'positive')).catch(error => upperToast(error, 'negative'));">
-        Copy to Clipboard
-    </div>
-    <p id="serial_number_count" /> 
-</div> -->
-
-<!--             
-            /*
- * This function user regular expressions to match known serial number patterns, circa April 2025
- * - textAreaID (required): the input <textarea> where a user can paste in any text; this element is also assigned the output result
- * - seperator (required): the character(s) used for separating the output values
- * - countID (optional): an element that can be assigned a count of found serial numbers
- */
-function extractSerialNumbers(textAreaID, separator, countID = "") {
-  const rModels = /(r\d{3})|(r1)|(r2)|(r2_180)|(r3)|(r4)/;
-  const drModels = /(dr\d{2})|(dr1)/;
-  const dcModels = /(dc\d{2})|(dc1)/;
-  const dModels = /(d1)|(d10)|(d20)/;
-  const bModels = /(b10)|(b15)/;
-  const eModels = /(e10)|(e2)|(e50)/;
-  const aModels = /(a100)/;
-  const nModels = /(n100)/;
-  const mModels = /(m15)/;
-  const tModels = /(t1)/;
-  const sVariations = /(s)/;
-  const oldSequence = /(\d{8})/;
-  const modelSeriesSeparator = /(-)/;
-  const newSequence = /(b\d{2}([a-l]\d{4}))/;
-  const termination = /(?=($|\D\s))/;
-
-  const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")(" + sVariations.source + "?)(" + (" + modelSeriesSeparator + ")" + oldSequence.source + "|" + newSequence.source + termination.source + ")", "gi");
-  const formValue = document.getElementById(textAreaID).value
-  const matches= formValue.toUpperCase().match(regexPattern) || [];
-  const uniqueMatches = [...new Set(matches.sort())];
-  const deviceCount = uniqueMatches.length + " unique serials";
-  
-  const result = uniqueMatches.length > 0 ? uniqueMatches.join(separator) : "no matches";
-  document.getElementById(textAreaID).value = result
-
-  if (countID != "") {
-    document.getElementById(countID).innerHTML = deviceCount
-  }
-}
-
-/*
- * Returns a Promise. Successful promise contains no parameter,
- * rejected promise contains an error string as param. Example usage:
- *
- * copyTextToClipboard('some text value').then(() => alert("success!")).catch((error) => alert(error));
- * 
- * TODO: decide if this function should be in internal.js, similar to copyToClipboard()
- *
- */
-function copyTextToClipboard(text) {
-  let returnedPromise = null;
-  if (text != "") {
-    if (navigator.clipboard) {
-      returnedPromise = navigator.clipboard.writeText(text);
-    } else {
-      // fallback to deprecated document.execCommand('copy')
-      document.execCommand("copy");
-      // assume success since we know there was some visible text
-      returnedPromise = new Promise((resolve, reject) => {
-        resolve();
-      });
-    }
-  } else {
-    // attempts to place an empty string in the clipboard do not appear to work
-    returnedPromise = new Promise((resolve, reject) => {
-      reject("No content to copy");
-    });
-  }
-  return returnedPromise;
-}
- -->

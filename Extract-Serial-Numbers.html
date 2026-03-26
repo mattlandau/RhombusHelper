@@ -14,17 +14,17 @@ function extractSerialNumbers(textAreaID, separator, countID = "") {
   const bModels = /(b10)|(b15)/;
   const eModels = /(e10)|(e2)|(e50)/;
   const aModels = /(a100)/;
-  const nModels = /(n100)/;
+  const nModels = /(n100)|(n500)/;
   const mModels = /(m15)/;
   const tModels = /(t1)/;
   const sVariations = /(s)/;
   const oldSequence = /(\d{8})/;
-  const newSequence = /(b\d{2}([a-l]\d{4}))/;
+  const newSequence = /([a-z]\d{2}[a-l]\d{4})/;
   const termination = /(?=($|\D\s))/;
 
-  const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + dModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")" + sVariations.source + "?(-)(" + oldSequence.source + "|" + newSequence.source + termination.source + ")", "gi");
+  const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + dModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")" + sVariations.source + "?(-)(" + oldSequence.source + "|" + newSequence.source + ")" + termination.source, "gi");
   console.log("regex pattern: " + regexPattern)
-  
+
   const formValue = document.getElementById(textAreaID).value
   const matches= formValue.toUpperCase().match(regexPattern) || [];
   const uniqueMatches = [...new Set(matches.sort())];

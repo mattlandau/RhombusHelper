@@ -20,7 +20,7 @@ function extractSerialNumbers(textAreaID, separator, countID = "") {
   const sVariations = /(s)/;
   const oldSequence = /(\d{8})/;
   const newSequence = /([a-z]\d{2}[a-l]\d{4})/;
-  const termination = /(?=($|\D\s))/;
+  const termination = /(?=($|\D))/;
 
   const regexPattern = new RegExp("(" + rModels.source + "|" + drModels.source + "|" + dcModels.source + "|" + dModels.source + "|" + bModels.source + "|" + eModels.source + "|" + aModels.source + "|" + nModels.source + "|" + mModels.source + "|" + tModels.source  + ")" + sVariations.source + "?(-)(" + oldSequence.source + "|" + newSequence.source + ")" + termination.source, "gi");
   console.log("regex pattern: " + regexPattern)
@@ -46,7 +46,7 @@ function copyTextToClipboardSimple(text) {
 </script>
 </head>
 <body>
-<h3>Extract Serial Numbers 2.1</h3>
+<h3>Extract Serial Numbers 2.2</h3>
   <div id="extract-serial-numbers-tool">
     <hr />
     <div>
